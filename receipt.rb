@@ -1,5 +1,16 @@
-require_relative 'item'
+#require_relative 'item'
 #receipt class
+class Item
+  attr_reader :name, :price, :imported, :free_of_tax
+  def initialize(name, price, imported, free_of_tax)
+    @name = name
+    @price = price
+    @imported = imported
+    @free_of_tax = free_of_tax
+  end
+end
+
+#------------------------------------------------------------------------------
 
 class Receipt
 
@@ -14,32 +25,30 @@ class Receipt
     #an array to keep the items shopping_cart
     @shopping_cart = []
     #user selector
-    @item_to_add = 0
+  #  @item_to_add = 0
   end
 
-#a ver como se usa esto
-
-  def add_item(item_to_add)
-    @shopping_cart << @item_to_add
-  end
 #calcula el tax
+
   def tax(item)
     free = item.free_of_tax
-    if free == false
     @price = item.price
+    if free == false
     @tax = @price * 0.10
     @price = @price + @tax
     end
     import_tax
   end
+
 #calcula el impuesto de importacion
 
   def import_tax(item)
     imported = item.imported
     if imported == true
       @tax = @tax + (@price * 0.05)
-      @price = @price + (@price *0.05)
+      @price = @price + @tax
     end
+    add_to_total
   end
 
 #suma al total de la factura y el total de impuesto
@@ -58,21 +67,34 @@ class Receipt
     puts " 3 ... Music CD 14.99"
     puts " 4 ... Medicine 32.60"
     puts " 5 ... Chocolate bar 0.85"
-    @item_to_add = gets.chomp
+    item_to_add = gets.chomp
     case @item_to_add
     when 1
-      add_item(Book)
+      self.add_item(book)
+      puts "You have added a Book"
     when 2
-      add_item(Food)
+      self.add_item(food)
+      puts "You have added Food"
     when 3
-      add_item(Music_cd)
+      self.add_item(music_cd)
+      puts "You have added a Music cd"
     when 4
-      add_item(Medicine)
+      self.add_item(medicine)
+      puts "You have added Medicine"
     when 5
-      add_item(Chocolate_bar)
+      self.add_item(chocolate_bar)
+      puts "You have added a Chocolate Bar"
     end
     add_another_item
   end
+
+# add a product to the cart
+
+  def add_item(item)
+    @shopping_cart << item
+    puts "you have just added an item"
+  end
+
 #function to add another item
 
   def add_another_item
@@ -82,12 +104,19 @@ class Receipt
       pick_a_product
     else
       puts "This is your receipt"
+      print_receipt
+    end
   end
 
 # function for printing the receipt
 
   def print_receipt
-
+    @shopping_cart.each do |item|
+      puts "1 #{item}"
+      item.tax
+    end
+    puts "Total Taxes #{@@counter_tax}"
+    puts "Total Balance #{@@counter_total}"
   end
 end
 
@@ -107,5 +136,4 @@ receipt1 = Receipt.new
 # how the program runs
 
 receipt1.pick_a_product
-receipt1.
-receipt1.print_receipt
+#receipt1.print_receipt
